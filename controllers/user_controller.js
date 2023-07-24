@@ -2,7 +2,7 @@ const { User } = require("../models/user_schema");
 
 const userLogin = async(req,resp)=>{
     try{
-        const username=req.body.username.toLowerCase();;
+        const username=req.body.username.toLowerCase();
         const password=req.body.password;
         let user = await User.findOne({username:username,password:password})
         if(user){

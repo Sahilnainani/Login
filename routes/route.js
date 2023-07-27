@@ -1,5 +1,5 @@
 const express =  require('express')
-const { userLogin,userRegistration } = require('../controllers/user_controller')
+const { userLogin,userRegistration, defaultPage } = require('../controllers/user_controller')
 
 const router = express.Router()
 
@@ -8,5 +8,6 @@ router.get('/',(req,resp)=>{
 })
 router.post('/login',userLogin)
 router.post('/register',userRegistration)
+router.use("*",defaultPage)
 
 module.exports = {router}

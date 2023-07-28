@@ -1,18 +1,19 @@
 const { User } = require("../models/user_schema");
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const JWT_SECRET_KEY = "qwertyuiop1234567890"
 
 const userLogin = async (req, resp) => {
     try {
         let { username, password } = req.body
         if (username && password) {
-            username=username.toLowerCase()
+            // username=username.toLowerCase()
             const user = await User.findOne({ username: username })
             if (user != null) {
                 const isMatch = await bcrypt.compare(password, user.password)
                 if ((user.username === username) && isMatch) {
                     // Generate JWT Token
-                    const token = jwt.sign({ userID: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '5d' })
+                    const token = jwt.sign({ userID: user._id }, JWT_SECRET_KEY, { expiresIn: '5d' })
                     resp.send({ "status": "success", "message": "Login Success", "token": token })
                 } else {
                     resp.send({ "status": "failed", "message": "Username or Password is not Valid" })
@@ -31,7 +32,7 @@ const userLogin = async (req, resp) => {
 
 const userRegistration = async (req, resp) => {
     let { username, password } = req.body
-    username=username.toLowerCase()
+    // username=username.toLowerCase()
     const exist = await User.findOne({ username: username })
     if (exist) {
         resp.send({ "status": "failed", "message": "username already exists" })
@@ -47,7 +48,7 @@ const userRegistration = async (req, resp) => {
                 })
                 await newUser.save();
                 const saved_user = await User.findOne({ username: username })
-                const token = jwt.sign({ userID: saved_user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '5d' })
+                const token = jwt.sign({ userID: saved_user._id },JWT_SECRET_KEY, { expiresIn: '5d' })
                 resp.status(201).send({ "status": "success", "message": "Registration Success", "token": token })
             }
             catch (e) {

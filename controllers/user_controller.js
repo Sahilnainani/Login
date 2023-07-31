@@ -1,19 +1,18 @@
 const { User } = require("../models/user_schema");
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const JWT_SECRET_KEY = "qwertyuiop1234567890"
 
 const userLogin = async (req, resp) => {
     try {
-        let { username, password } = req.body
+        const { username, password } = req.body
+        console.log(username,password)
         if (username && password) {
-            // username=username.toLowerCase()
             const user = await User.findOne({ username: username })
             if (user != null) {
                 const isMatch = await bcrypt.compare(password, user.password)
                 if ((user.username === username) && isMatch) {
                     // Generate JWT Token
-                    const token = jwt.sign({ userID: user._id }, JWT_SECRET_KEY, { expiresIn: '5d' })
+                    const token = jwt.sign({ userID: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '5m' })
                     resp.send({ "status": "success", "message": "Login Success", "token": token })
                 } else {
                     resp.send({ "status": "failed", "message": "Username or Password is not Valid" })
@@ -31,8 +30,10 @@ const userLogin = async (req, resp) => {
 }
 
 const userRegistration = async (req, resp) => {
-    let { username, password } = req.body
-    // username=username.toLowerCase()
+    const { username, password } = req.body
+    console.log(username,password)
+    console.log(req.body)
+
     const exist = await User.findOne({ username: username })
     if (exist) {
         resp.send({ "status": "failed", "message": "username already exists" })
@@ -48,7 +49,7 @@ const userRegistration = async (req, resp) => {
                 })
                 await newUser.save();
                 const saved_user = await User.findOne({ username: username })
-                const token = jwt.sign({ userID: saved_user._id },JWT_SECRET_KEY, { expiresIn: '5d' })
+                const token = jwt.sign({ userID: saved_user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '5d' })
                 resp.status(201).send({ "status": "success", "message": "Registration Success", "token": token })
             }
             catch (e) {
@@ -61,6 +62,12 @@ const userRegistration = async (req, resp) => {
         }
     }
 }
+
+const changePassword = async(req,resp)=>{
+    console.log("Password Changed")
+    resp.send("Password Changed")
+}
+
 const defaultPage = async (req, res) => {
     res.status(404).json({
         success: "false",
@@ -71,4 +78,4 @@ const defaultPage = async (req, res) => {
         },
     });
 }
-module.exports = { userLogin, userRegistration, defaultPage }
+module.exports = { userLogin, userRegistration, defaultPage, changePassword }

@@ -3,11 +3,18 @@ const { router } = require('./routes/route');
 const { Connection } = require('./database/db');
 const bodyParser = require('body-parser')
 const dotenv = require('dotenv')
+const cors = require('cors')
 
 const PORT = 4000
 const app = express()
 dotenv.config();
-app.use(bodyParser.json({extended:true}));
+
+app.use(cors())
+
+// app.use(bodyParser.json({extended:true}));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/',router)
 
 const USERNAME=process.env.DB_USERNAME

@@ -30,6 +30,7 @@ const userLogin = async (req, resp) => {
 }
 
 const userRegistration = async (req, resp) => {
+    console.log(req.body)
     const { username, password } = req.body
 
     const exist = await User.findOne({ username: username })

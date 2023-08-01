@@ -12,20 +12,20 @@ const userLogin = async (req, resp) => {
                 if ((user.username === username) && isMatch) {
                     // Generate JWT Token
                     const token = jwt.sign({ userID: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '5d' })
-                    console.log("Login Successful",req.body)
-                    resp.send({ "status": "success", "message": "Login Success", "token": token })
+                    console.log("Login Successful", req.body)
+                    resp.status(200).send({ "status": "success", "message": "Login Success", "token": token })
                 } else {
-                    resp.send({ "status": "failed", "message": "Username or Password is not Valid" })
+                    resp.status(401).send({ "status": "failed", "message": "Username or Password is not Valid" })
                 }
             } else {
-                resp.send({ "status": "failed", "message": "You are not a Registered User" })
+                resp.status(401).send({ "status": "failed", "message": "You are not a Registered User" })
             }
         } else {
-            resp.send({ "status": "failed", "message": "All Fields are Required" })
+            resp.status(500).send({ "status": "failed", "message": "All Fields are Required" })
         }
     } catch (error) {
         console.log(error)
-        resp.send({ "status": "failed", "message": "Unable to Login" })
+        resp.status(500).send({ "status": "failed", "message": "Unable to Login" })
     }
 }
 
@@ -35,7 +35,7 @@ const userRegistration = async (req, resp) => {
 
     const exist = await User.findOne({ username: username })
     if (exist) {
-        resp.send({ "status": "failed", "message": "username already exists" })
+        resp.status(409).send({ "status": "failed", "message": "username already exists" })
     }
     else {
         if (username && password) {
@@ -49,21 +49,21 @@ const userRegistration = async (req, resp) => {
                 await newUser.save();
                 const saved_user = await User.findOne({ username: username })
                 const token = jwt.sign({ userID: saved_user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '5d' })
-                console.log("Registration Successful",req.body)
+                console.log("Registration Successful", req.body)
                 resp.status(201).send({ "status": "success", "message": "Registration Success", "token": token })
             }
             catch (e) {
                 console.log(e)
-                resp.send({ "status": "failed", "message": "Unable to Register" })
+                resp.status(500).send({ "status": "failed", "message": "Unable to Register" })
             }
         }
         else {
-            resp.send({ "status": "failed", "message": "All fields are required" })
+            resp.status(500).send({ "status": "failed", "message": "All fields are required" })
         }
     }
 }
 
-const changePassword = async(req,resp)=>{
+const changePassword = async (req, resp) => {
     console.log("Password Changed")
     resp.send("Password Changed")
 }

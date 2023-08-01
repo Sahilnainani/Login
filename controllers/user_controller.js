@@ -5,14 +5,14 @@ const bcrypt = require('bcrypt')
 const userLogin = async (req, resp) => {
     try {
         const { username, password } = req.body
-        console.log(username,password)
         if (username && password) {
             const user = await User.findOne({ username: username })
             if (user != null) {
                 const isMatch = await bcrypt.compare(password, user.password)
                 if ((user.username === username) && isMatch) {
                     // Generate JWT Token
-                    const token = jwt.sign({ userID: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '5m' })
+                    const token = jwt.sign({ userID: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '5d' })
+                    console.log("Login Successful",req.body)
                     resp.send({ "status": "success", "message": "Login Success", "token": token })
                 } else {
                     resp.send({ "status": "failed", "message": "Username or Password is not Valid" })
@@ -31,8 +31,6 @@ const userLogin = async (req, resp) => {
 
 const userRegistration = async (req, resp) => {
     const { username, password } = req.body
-    console.log(username,password)
-    console.log(req.body)
 
     const exist = await User.findOne({ username: username })
     if (exist) {
@@ -50,6 +48,7 @@ const userRegistration = async (req, resp) => {
                 await newUser.save();
                 const saved_user = await User.findOne({ username: username })
                 const token = jwt.sign({ userID: saved_user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '5d' })
+                console.log("Registration Successful",req.body)
                 resp.status(201).send({ "status": "success", "message": "Registration Success", "token": token })
             }
             catch (e) {

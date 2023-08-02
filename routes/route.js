@@ -1,7 +1,7 @@
 const express =  require('express')
 const { userLogin,userRegistration, defaultPage, changePassword } = require('../controllers/user_controller')
 const { checkUserAuth } = require('../middleware/auth')
-const { userTask, getTasks } = require('../controllers/task_controller')
+const { userTask, getTasks, deleteTasks } = require('../controllers/task_controller')
 
 const router = express.Router()
 
@@ -9,17 +9,24 @@ router.get('/',(req,resp)=>{
     console.log("TEMP")
     resp.send("TEMP")
 })
-router.use('/changepassword',checkUserAuth)
-router.use('/addtask',checkUserAuth)
-// router.use('/tasks',checkUserAuth)
 
+// Authentication
+router.use('/changepassword',checkUserAuth)
+router.use('/tasks/addtask',checkUserAuth)
+router.use('/tasks',checkUserAuth)
+router.use('/tasks/delete/:id',checkUserAuth)
+
+// Users
 router.post('/login',userLogin)
 router.post('/register',userRegistration)
 router.post('/changepassword',changePassword)
-router.post('/addtask',userTask)
 
+// Tasks
+router.post('tasks/addtask',userTask)
 router.get('/tasks',getTasks)
+router.delete('/tasks/delete/:id',deleteTasks)
 
+// Default
 router.use("*",defaultPage)
 
 module.exports = {router}

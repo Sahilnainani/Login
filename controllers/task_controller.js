@@ -56,7 +56,6 @@ const getTasks = async (req, resp) => {
 const deleteTasks = async(req,resp) =>{
     try{
         const ID = req.params.id
-        console.log(ID)
         const result = await Task.deleteOne({_id:ID})
         resp.send(result)
     }

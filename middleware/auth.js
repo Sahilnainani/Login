@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-var checkUserAuth = async (req, res, next) => {
+var checkUserAuth = async (req, resp, next) => {
   let token
   const { authorization } = req.headers
   if (authorization && authorization.startsWith('Bearer')) {
@@ -14,11 +14,11 @@ var checkUserAuth = async (req, res, next) => {
       next()
     } catch (error) {
       console.log(error)
-      res.status(401).send({ "status": "failed", "message": "Unauthorized User" })
+      resp.status(401).send({ "status": "failed", "message": "Unauthorized User" })
     }
   }
   if (!token) {
-    res.status(401).send({ "status": "failed", "message": "Unauthorized User, No Token" })
+    resp.status(401).send({ "status": "failed", "message": "Unauthorized User, No Token" })
   }
 }
 

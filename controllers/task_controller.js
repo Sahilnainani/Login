@@ -32,8 +32,8 @@ const userTask = async (req, resp) => {
 
 const getTasks = async (req, resp) => {
     try {
-        const pageSize = parseInt(req.query.size) | 5
-        const pageNumber = parseInt(req.query.page) | 1
+        const pageSize = parseInt(req.query.size) || 5
+        const pageNumber = parseInt(req.query.page) || 1
 
         const { authorization } = req.headers
         token = authorization.split(' ')[1]

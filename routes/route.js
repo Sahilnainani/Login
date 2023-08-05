@@ -2,7 +2,7 @@ const express =  require('express')
 const { userLogin,userRegistration, defaultPage, changePassword } = require('../controllers/user_controller')
 const { checkUserAuth } = require('../middleware/auth')
 const { userTask, getTasks, deleteTasks } = require('../controllers/task_controller')
-const { uploadFile } = require('../controllers/file_controller')
+const { uploadFile, upload } = require('../controllers/file_controller')
 
 const router = express.Router()
 
@@ -29,7 +29,7 @@ router.get('/tasks',getTasks)
 router.delete('/tasks/delete/:id',deleteTasks)
 
 // Upload File
-router.post('/upload',uploadFile)
+router.post('/upload', upload, uploadFile)
 
 // Default
 router.use("*",defaultPage)

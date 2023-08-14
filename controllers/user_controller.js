@@ -35,7 +35,7 @@ const userRegistration = async (req, resp) => {
 
     const exist = await User.findOne({ username: username })
     if (exist) {
-        resp.send({ "status": "failed", "message": "username already exists" })
+        resp.send({ "status": "failed", "message": "Username Already Exists" })
     }
     else {
         if (username && password) {
@@ -58,7 +58,7 @@ const userRegistration = async (req, resp) => {
             }
         }
         else {
-            resp.send({ "status": "failed", "message": "All fields are required" })
+            resp.send({ "status": "failed", "message": "All fields are Required" })
         }
     }
 }
